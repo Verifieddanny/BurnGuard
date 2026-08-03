@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:16.6
+    container_name: bunguard-db
+    environment:
+      POSTGRES_USER: bunguardadmin
+      POSTGRES_PASSWORD: bunguardadminpassword
+      POSTGRES_DB: bunguard
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+volumes:
+  db_data:

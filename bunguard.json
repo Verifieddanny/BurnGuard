@@ -1,0 +1,22 @@
+{
+    "server": {
+        "proxy_port": ":8080",
+        "db_path": "store.db"
+    },
+    "budget":{
+        "limit": 5.00
+    },
+    "providers": {
+        "anthropic": {
+            "base_url": "https://api.anthropic.com"
+        },
+        "openai": {
+            "base_url": "https://api.openai.com"
+        }
+    },
+    "alerts": {
+        "slack_webhook": "",
+        "discord_webhook": "",
+        "thresholds": [0.5, 0.8, 1.0]
+    }
+}
