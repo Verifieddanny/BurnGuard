@@ -16,7 +16,7 @@ const ITEMS = [
   },
   {
     q: "Which providers are supported?",
-    a: "Anthropic, OpenAI, and Google today, unified into one dashboard with per-model breakdowns. More providers are on the way.",
+    a: "Anthropic, OpenAI, and Google(In View) today, unified into one dashboard with per-model breakdowns. More providers are on the way.",
   },
   {
     q: "Does it add latency?",

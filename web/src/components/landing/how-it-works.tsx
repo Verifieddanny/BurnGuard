@@ -14,7 +14,7 @@ const STEPS = [
   {
     n: "02",
     title: "Every request is metered live",
-    body: "Tokens and cost are computed per request across Anthropic, OpenAI, and Google — streamed to your dashboard in real-time.",
+    body: "Tokens and cost are computed per request across Anthropic, OpenAI, and Google(In View) — streamed to your dashboard in real-time.",
     icon: ChartLineIcon,
     detail: "SSE-safe · sub-millisecond overhead",
   },

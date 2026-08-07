@@ -37,7 +37,7 @@ const FEATURES: Feature[] = [
   },
   {
     title: "Multi-provider, one view",
-    body: "Anthropic, OpenAI, and Google spend unified in a single dashboard with per-model breakdowns.",
+    body: "Anthropic, OpenAI, and Google(In View) spend unified in a single dashboard with per-model breakdowns.",
     // icon: LightningIcon,
     icon: (<Image src="/img/multi-provider.png" alt="Chart Line" width={32} height={32} />)
 
