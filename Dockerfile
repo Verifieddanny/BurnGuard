@@ -1,7 +1,11 @@
 FROM golang:1.23-alpine AS builder
 WORKDIR /app
 
-RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+RUN apk add --no-cache curl
+
+ARG MIGRATE_VERSION=v4.18.2
+RUN curl -L https://github.com/golang-migrate/migrate/releases/download/${MIGRATE_VERSION}/migrate.linux-amd64.tar.gz | tar xvz \
+    && mv migrate /tmp/migrate
 
 COPY go.mod go.sum ./
 RUN go mod download
@@ -16,7 +20,7 @@ WORKDIR /app
 
 COPY --from=builder /app/server .
 
-COPY --from=builder /go/bin/migrate /usr/local/bin/migrate
+COPY --from=builder /tmp/migrate /usr/local/bin/migrate
 
 COPY --from=builder /app/internal/migrations ./internal/migrations
 
