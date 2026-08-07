@@ -21,6 +21,11 @@ func main() {
 	}
 
 	serverAddr := ":" + port
+
+	frontendURL := os.Getenv("FRONTEND_URL")
+	if frontendURL == "" {
+		frontendURL = "http://localhost:3000" 
+	}
 	cfg := config{
 		addr: serverAddr,
 		env:  "development",
@@ -41,7 +46,7 @@ func main() {
 				ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
 			},
 		},
-		frontendURL: os.Getenv("FRONTEND_URL"),
+		frontendURL: frontendURL,
 	}
 
 	logger := zap.Must(zap.NewProduction()).Sugar()

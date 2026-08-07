@@ -21,8 +21,14 @@ func (app *application) mount() http.Handler {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
+	allowedOrigins := []string{app.config.frontendURL}
+
+	if app.config.env != "production" {
+		allowedOrigins = append(allowedOrigins, "http://localhost:3000")
+	}
+
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{app.config.frontendURL},
+		AllowedOrigins:   allowedOrigins,
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders:   []string{"Link"},
