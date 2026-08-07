@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+/*
+  BurnGuard design system — "Ember"
+  ---------------------------------
+  Warm, bougie neutrals (espresso-black / ivory) with a single molten-orange
+  accent. No gradients as decoration; one brand color, minimal palette.
+  Dark is the default; `.dark` / `.light` on <html> force a mode.
+*/
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------ *
+ * Runtime theme tokens
+ * ------------------------------------------------------------------ */
+
+/* Dark — warm near-black espresso (default) */
+:root,
+:root.dark {
+  --bg-primary: #0c0a09;
+  --bg-secondary: #15110e;
+  --bg-tertiary: #1e1813;
+  --border: #2a221b;
+  --border-strong: #3b2f26;
+  --text-primary: #f6efe7;
+  --text-secondary: #ada298;
+  --text-muted: #786f68;
+  color-scheme: dark;
+}
+
+/* Light — warm ivory / bone */
+:root.light {
+  --bg-primary: #f3ede4;
+  --bg-secondary: #fbf7f0;
+  --bg-tertiary: #ebe2d5;
+  --border: #e1d7c9;
+  --border-strong: #cec2b1;
+  --text-primary: #1b1411;
+  --text-secondary: #6c6157;
+  --text-muted: #9a8f81;
+  color-scheme: light;
+}
+
+/* Brand + status — the one accent is molten ember orange */
+:root {
+  --accent: #ff5a1f;
+  --accent-hover: #ff7040;
+  --accent-ink: #1a0a03; /* readable text on the accent */
+  --warning: #f59e0b;
+  --danger: #e5484d;
+  --success: #d99a3c; /* warm gold — intentionally not green */
+}
+
+/* ------------------------------------------------------------------ *
+ * Tailwind theme bindings
+ * ------------------------------------------------------------------ */
+
+@theme inline {
+  --color-bg: var(--bg-primary);
+  --color-surface: var(--bg-secondary);
+  --color-elevated: var(--bg-tertiary);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-fg: var(--text-primary);
+  --color-fg-muted: var(--text-secondary);
+  --color-fg-subtle: var(--text-muted);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-ink: var(--accent-ink);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+
+  /* Fonts — provided by next/font in layout.tsx */
+  --font-sans: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace, monospace;
+
+  /* Type scale */
+  --text-hero: 3.5rem;
+  --text-hero--line-height: 4rem;
+
+  /* Animations */
+  --animate-marquee: marquee 32s linear infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes app-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.app-page-in {
+  animation: app-page-in 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none !important;
+  }
+  .app-page-in {
+    animation: none !important;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Base element styles
+ * ------------------------------------------------------------------ */
+
+@layer base {
+  html {
+    overflow-x: hidden;
+  }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+}
