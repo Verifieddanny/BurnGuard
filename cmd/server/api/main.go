@@ -15,10 +15,13 @@ import (
 )
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3001"
+	}
 	cfg := config{
-		addr:   os.Getenv("ADDR"),
-		env:    "development",
-		apiUrl: "localhost:3001",
+		addr: port,
+		env:  "development",
 		db: dbConfig{
 			addr:         os.Getenv("DATABASE_URL"),
 			maxOpenConns: 30,
