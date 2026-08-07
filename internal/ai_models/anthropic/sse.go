@@ -28,6 +28,8 @@ func ParseSSE(dataLines [][]byte, requestPath string) (*storage.Usage, error) {
 	var inputTokens int
 	var outputTokens int
 	var foundStart, foundDelta bool
+	var cacheCreationTokens int
+	var cacheReadTokens int
 
 	for _, line := range dataLines {
 		// Quick check to avoid unmarshalling every line
@@ -36,6 +38,8 @@ func ParseSSE(dataLines [][]byte, requestPath string) (*storage.Usage, error) {
 			if err := json.Unmarshal(line, &start); err == nil && start.Type == "message_start" {
 				model = start.Message.Model
 				inputTokens = start.Message.Usage.InputTokens
+				cacheCreationTokens = start.Message.Usage.CacheCreation.Ephemeral5mInputTokens + start.Message.Usage.CacheCreation.Ephemeral1hInputTokens
+				cacheReadTokens = start.Message.Usage.CacheReadInputTokens
 				foundStart = true
 				continue
 			}
@@ -63,16 +67,20 @@ func ParseSSE(dataLines [][]byte, requestPath string) (*storage.Usage, error) {
 
 	resp.Usage.InputTokens = inputTokens
 	resp.Usage.OutputTokens = outputTokens
+	resp.Usage.CacheCreationInputTokens = cacheCreationTokens
+	resp.Usage.CacheReadInputTokens = cacheReadTokens
 	inputCost := resp.InputCost()
 	outputCost := resp.OutputCost()
 
 	return &storage.Usage{
-		Timestamp:    time.Now(),
-		Provider:     "anthropic",
-		Model:        model,
-		InputTokens:  inputTokens,
-		OutputTokens: outputTokens,
-		Cost:         inputCost + outputCost,
-		RequestPath:  requestPath,
+		Timestamp:           time.Now(),
+		Provider:            "anthropic",
+		Model:               model,
+		InputTokens:         inputTokens,
+		OutputTokens:        outputTokens,
+		CacheCreationTokens: cacheCreationTokens,
+		CacheReadTokens:     cacheReadTokens,
+		Cost:                inputCost + outputCost,
+		RequestPath:         requestPath,
 	}, nil
 }

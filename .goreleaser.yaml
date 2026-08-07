@@ -1,0 +1,46 @@
+version: 2
+
+project_name: burnguard
+
+builds:
+  - id: proxy
+    main: ./cmd/proxy
+    binary: burnguard
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - id: proxy
+    builds:
+      - proxy
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    name_template: "burnguard_{{ .Os }}_{{ .Arch }}"
+
+brews:
+  - name: burnguard
+    repository:
+      owner: Verifieddanny
+      name: homebrew-tap
+    directory: Formula
+    homepage: https://burnguard.run
+    description: "Stop surprise AI API bills before they happen"
+    install: |
+      bin.install "burnguard"
+
+release:
+  github:
+    owner: Verifieddanny
+    name: BunGuard
+
+changelog:
+  sort: asc

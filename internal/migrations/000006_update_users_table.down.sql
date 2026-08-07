@@ -1,0 +1,4 @@
+DELETE FROM users WHERE github_id IS NULL;
+
+ALTER TABLE users DROP COLUMN IF EXISTS google_id;
+ALTER TABLE users ALTER COLUMN github_id SET NOT NULL;

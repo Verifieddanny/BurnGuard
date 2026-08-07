@@ -22,3 +22,9 @@ alerts:
     - 0.5   # alert at 50%
     - 0.8   # alert at 80%
     - 1.0   # alert at 100%
+
+sync:
+  enabled: true
+  token: "bg_82f72566bd4662be7523370bb8d26c2dc0059b161a1b3b0793f7a91dfa452f8f"
+  url: "http://localhost:3001"
+  interval: 60  # seconds

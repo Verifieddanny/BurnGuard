@@ -12,40 +12,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
-	"go.uber.org/zap"
 )
-
-type application struct {
-	config          config
-	logger          *zap.SugaredLogger
-	showdownTimeout time.Duration
-	httpClient      *http.Client
-	sessions        *SessionStore
-}
-
-type config struct {
-	addr   string
-	db     dbConfig
-	env    string
-	apiUrl string
-	oAuth  oAuth
-}
-
-type dbConfig struct {
-	addr         string
-	maxOpenConns int
-	maxIdleConns int
-	maxIdleTime  string
-}
-
-type oAuth struct {
-	Github GithubConfig
-}
-
-type GithubConfig struct {
-	ClientID     string
-	ClientSecret string
-}
 
 func (app *application) mount() http.Handler {
 	r := chi.NewRouter()
@@ -69,8 +36,43 @@ func (app *application) mount() http.Handler {
 	r.Get("/welcome", app.welcomeMessage)
 
 	r.Route("/v1", func(r chi.Router) {
-		r.Get("/auth/github", app.redirectToGithub)
-		r.Get("/auth/github/callback", app.handleGithubCallback)
+		r.Route("/auth", func(r chi.Router) {
+			r.Get("/github", app.redirectToGithub)
+			r.Get("/github/callback", app.handleGithubCallback)
+
+			r.Get("/google", app.redirectToGoogle)
+			r.Get("/google/callback", app.handleGoogleCallback)
+
+			r.Post("/passkey/login/begin", app.passkeyLoginBegin)
+			r.Post("/passkey/login/finish", app.passkeyLoginFinish)
+
+		})
+
+		r.Post("/usage", app.syncUsageHandler)
+
+		r.Group(func(r chi.Router) {
+			r.Use(app.requireAuth)
+
+			r.Get("/auth/me", app.getProfileHandler)
+			r.Post("/auth/passkey/register/begin", app.passkeyRegisterBegin)
+			r.Post("/auth/passkey/register/finish", app.passkeyRegisterFinish)
+
+			r.Post("/tokens", app.createTokenHandler)
+			r.Get("/tokens", app.listTokensHandler)
+
+			r.Get("/dashboard/summary", app.dashboardSummaryHandler)
+			r.Get("/dashboard/chart", app.dashboardChartHandler)
+			r.Get("/dashboard/providers", app.dashboardProvidersHandler)
+			r.Get("/dashboard/requests", app.dashboardRequestsHandler)
+
+			r.Get("/alerts/config", app.getAlertConfigHandler)
+			r.Put("/alerts/config", app.updateAlertConfigHandler)
+
+			r.Get("/budget", app.getBudgetHandler)
+			r.Put("/budget", app.updateBudgetHandler)
+			r.Post("/budget", app.setBudgetHandler)
+
+		})
 	})
 
 	return r

@@ -1,0 +1,5 @@
+ALTER TABLE passkey_credentials 
+ADD COLUMN flags_user_present BOOLEAN NOT NULL DEFAULT TRUE,
+ADD COLUMN flags_user_verified BOOLEAN NOT NULL DEFAULT FALSE,
+ADD COLUMN flags_backup_eligibility BOOLEAN NOT NULL DEFAULT FALSE,
+ADD COLUMN flags_backup_state BOOLEAN NOT NULL DEFAULT FALSE;

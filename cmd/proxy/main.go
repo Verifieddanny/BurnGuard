@@ -1,8 +1,12 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/Verifieddanny/bunguard/internal/alerts"
 	"github.com/Verifieddanny/bunguard/internal/budget"
@@ -10,10 +14,34 @@ import (
 	"github.com/Verifieddanny/bunguard/internal/db"
 	"github.com/Verifieddanny/bunguard/internal/middleware"
 	"github.com/Verifieddanny/bunguard/internal/proxy"
+	"github.com/Verifieddanny/bunguard/internal/storage"
+	bgsync "github.com/Verifieddanny/bunguard/internal/sync"
 )
 
 func main() {
-	cfg, err := config.Load("burnguard.yaml")
+	if len(os.Args) > 1 {
+		switch os.Args[1] {
+		case "init":
+			if err := runInit(); err != nil {
+				log.Fatal(err)
+			}
+			return
+		case "start":
+			// fall through to existing proxy startup code
+		default:
+			fmt.Printf("Unknown command: %s\n", os.Args[1])
+			fmt.Println("Usage: burnguard [init|start]")
+			os.Exit(1)
+		}
+	}
+
+
+	configPath := "burnguard.yaml" 
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		configPath = filepath.Join(homeDir(), ".burnguard", "config.yaml")
+	}
+
+	cfg, err := config.Load(configPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,6 +74,11 @@ func main() {
 	mux.Handle("/", middleware.BudgetGuard(p, tracker))
 
 	log.Printf("Listening on %v", cfg.Server.ProxyPort)
+
+	bgsyncer := bgsync.NewSyncer(storage.NewStorage(conn), cfg.Sync)
+	if cfg.Sync.Enabled {
+		go bgsyncer.Start(context.Background())
+	}
 
 	log.Fatal(http.ListenAndServe(cfg.Server.ProxyPort, mux))
 }

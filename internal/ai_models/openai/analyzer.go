@@ -3,8 +3,8 @@ package openai
 // Per-token costs (price per 1M tokens ÷ 1,000,000)
 const (
 	// GPT-4o
-	GPT4oInputCost  float64 = 0.0000025  // $2.50/1M
-	GPT4oOutputCost float64 = 0.00001    // $10/1M
+	GPT4oInputCost  float64 = 0.0000025 // $2.50/1M
+	GPT4oOutputCost float64 = 0.00001   // $10/1M
 
 	// GPT-4o mini
 	GPT4oMiniInputCost  float64 = 0.00000015 // $0.15/1M
@@ -56,36 +56,47 @@ const (
 )
 
 func (r OpenAIResponse) InputCost() float64 {
-	tokens := float64(r.Usage.PromptTokens)
+	var rate float64
 
 	switch r.Model {
 	case "gpt-4o", "gpt-4o-2024-11-20", "gpt-4o-2024-08-06", "gpt-4o-2024-05-13":
-		return tokens * GPT4oInputCost
+		rate = GPT4oInputCost
 	case "gpt-4o-mini", "gpt-4o-mini-2024-07-18":
-		return tokens * GPT4oMiniInputCost
+		rate = GPT4oMiniInputCost
 	case "gpt-4.1":
-		return tokens * GPT41InputCost
+		rate = GPT41InputCost
 	case "gpt-4.1-mini":
-		return tokens * GPT41MiniInputCost
+		rate = GPT41MiniInputCost
 	case "gpt-4.1-nano":
-		return tokens * GPT41NanoInputCost
+		rate = GPT41NanoInputCost
 	case "o3", "o3-2025-04-16":
-		return tokens * O3InputCost
+		rate = O3InputCost
 	case "o3-mini", "o3-mini-2025-01-31":
-		return tokens * O3MiniInputCost
+		rate = O3MiniInputCost
 	case "o4-mini", "o4-mini-2025-04-16":
-		return tokens * O4MiniInputCost
+		rate = O4MiniInputCost
 	case "o1", "o1-2024-12-17":
-		return tokens * O1InputCost
+		rate = O1InputCost
 	case "gpt-5":
-		return tokens * GPT5InputCost
+		rate = GPT5InputCost
 	case "gpt-5-mini":
-		return tokens * GPT5MiniInputCost
+		rate = GPT5MiniInputCost
 	case "gpt-5-nano":
-		return tokens * GPT5NanoInputCost
+		rate = GPT5NanoInputCost
 	default:
-		return tokens * FallbackInputCost
+		rate = FallbackInputCost
 	}
+
+	cachedTokens := float64(r.Usage.PromptTokensDetails.CachedTokens)
+	uncachedTokens := float64(r.Usage.PromptTokens) - cachedTokens
+
+	cacheDiscount := 0.5
+	switch r.Model {
+	case "gpt-5.4", "gpt-5.4-mini", "gpt-5.4-nano", "gpt-5.5", "gpt-5.6-sol", "gpt-5.6-terra", "gpt-5.6-luna":
+		cacheDiscount = 0.1
+	}
+
+	return (uncachedTokens * rate) + (cachedTokens * rate * cacheDiscount)
 }
 
 func (r OpenAIResponse) OutputCost() float64 {

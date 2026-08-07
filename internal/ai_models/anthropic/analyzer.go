@@ -17,35 +17,44 @@ const (
 )
 
 func (cr ClaudeResponse) InputCost() float64 {
-	inputToken := float64(cr.Usage.InputTokens)
+	var rate float64
 
 	switch cr.Model {
 	case "claude-fable-5":
-		return inputToken * FableInputUSDCost
+		rate = FableInputUSDCost
 	case "claude-opus-4-8", "claude-opus-4-7", "claude-opus-4-6", "claude-opus-4-5", "claude-opus-4-5-20251101":
-		return inputToken * OpusInputUSDCost
+		rate = OpusInputUSDCost
 	case "claude-sonnet-4-6", "claude-sonnet-4-5", "claude-sonnet-4-5-20250929":
-		return inputToken * SonnetInputUSDCost
+		rate = SonnetInputUSDCost
 	case "claude-haiku-4-5":
-		return inputToken * HaikuInputUSDCost
+		rate = HaikuInputUSDCost
 	default:
-		return inputToken * OldHaikuInputUSDCost
+		rate = OldHaikuInputUSDCost
 	}
+
+	standardCost := float64(cr.Usage.InputTokens) * rate
+	cacheCreationCost := float64(cr.Usage.CacheCreationInputTokens) * rate * 1.25
+	cacheReadCost := float64(cr.Usage.CacheReadInputTokens) * rate * 0.10
+
+	return standardCost + cacheCreationCost + cacheReadCost
 }
 
 func (cr ClaudeResponse) OutputCost() float64 {
-	outputToken := float64(cr.Usage.OutputTokens)
+	var rate float64
 
 	switch cr.Model {
 	case "claude-fable-5":
-		return outputToken * FableOutputUSDCost
+		rate = FableOutputUSDCost
 	case "claude-opus-4-8", "claude-opus-4-7", "claude-opus-4-6", "claude-opus-4-5", "claude-opus-4-5-20251101":
-		return outputToken * OpusOutputUSDCost
+		rate = OpusOutputUSDCost
 	case "claude-sonnet-4-6", "claude-sonnet-4-5", "claude-sonnet-4-5-20250929":
-		return outputToken * SonnetOutputUSDCost
+		rate = SonnetOutputUSDCost
 	case "claude-haiku-4-5":
-		return outputToken * HaikuOutputUSDCost
+		rate = HaikuOutputUSDCost
 	default:
-		return outputToken * OldHaikuOutputUSDCost
+		rate = OldHaikuOutputUSDCost
 	}
+	// standardCost := float64(cr.Usage.OutputTokens) * rate
+	// cacheCreationCost := float64(cr.Usage.CacheCreationOutputTokens) * rate * 1.25
+	return float64(cr.Usage.OutputTokens) * rate
 }

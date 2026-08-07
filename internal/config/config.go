@@ -10,6 +10,7 @@ type Config struct {
 	Budget    BudgetConfig              `yaml:"budget"`
 	Providers map[string]ProviderConfig `yaml:"providers"`
 	Alerts    AlertConfig               `yaml:"alerts"`
+	Sync      SyncConfig                `yaml:"sync"`
 }
 
 type ServerConfig struct {
@@ -29,6 +30,13 @@ type AlertConfig struct {
 	SlackWebhook   string    `yaml:"slack_webhook"`
 	DiscordWebhook string    `yaml:"discord_webhook"`
 	Thresholds     []float64 `yaml:"thresholds"`
+}
+
+type SyncConfig struct {
+	Enabled  bool   `yaml:"enabled"`
+	Token    string `yaml:"token"`
+	URL      string `yaml:"url"`
+	Interval int    `yaml:"interval"`
 }
 
 func Load(path string) (*Config, error) {

@@ -11,6 +11,8 @@ var QueryTimeoutDuration = time.Second * 5
 type Storage struct {
 	Usage interface {
 		Create(context.Context, *Usage) error
+		GetUnsynced(context.Context, int) ([]Usage, error)
+		MarkSynced(context.Context, []int) error
 	}
 }
 
