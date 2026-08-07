@@ -19,8 +19,10 @@ func main() {
 	if port == "" {
 		port = "3001"
 	}
+
+	serverAddr := ":" + port
 	cfg := config{
-		addr: port,
+		addr: serverAddr,
 		env:  "development",
 		db: dbConfig{
 			addr:         os.Getenv("DATABASE_URL"),
@@ -59,10 +61,15 @@ func main() {
 
 	storage := dbstore.NewStorage(conn)
 
+	rpID := os.Getenv("WEBAUTHN_RP_ID")
+	if rpID == "" {
+		rpID = "localhost"
+	}
+
 	wn, err := webauthn.New(&webauthn.Config{
 		RPDisplayName: "BurnGuard",
-		RPID:          "localhost",
-		RPOrigins:     []string{"http://localhost:3000"},
+		RPID:          rpID,
+		RPOrigins:     []string{cfg.frontendURL},
 	})
 	if err != nil {
 		logger.Fatal("failed to init webauthn:", err)
