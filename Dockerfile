@@ -13,11 +13,18 @@ FROM alpine:3.19
 RUN apk add --no-cache ca-certificates tzdata
 
 WORKDIR /app
+
 COPY --from=builder /app/server .
+
 COPY --from=builder /go/bin/migrate /usr/local/bin/migrate
+
 COPY --from=builder /app/internal/migrations ./internal/migrations
 
-ENV PORT=3001
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
+
+ENV PORT=10000
 EXPOSE ${PORT}
 
+ENTRYPOINT ["./entrypoint.sh"]
 CMD ["./server"]
