@@ -29,7 +29,7 @@ COPY --from=builder /app/internal/migrations ./internal/migrations
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
-ENV PORT=10000
+ENV PORT=3001
 EXPOSE ${PORT}
 
 ENTRYPOINT ["./entrypoint.sh"]
