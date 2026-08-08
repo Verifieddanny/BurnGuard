@@ -46,7 +46,7 @@ export function HowItWorks() {
           <StyledImage 
             width={1400}
             height={500}
-            src="/img/how-it-works-view.png"
+            src="/img/how-it-works.png"
             alt="Wide banner (Ember, Mode A): three connected stages — (1) code editor with one highlighted line, (2) glowing ember-orange BurnGuard proxy node in the middle, (3) abstract API provider chips. Smooth connection lines with a few data pulses; warm espresso backdrop, no grid, no particles."
             fallbackDescription="Wide banner (Ember, Mode A): three connected stages — (1) code editor with one highlighted line, (2) glowing ember-orange BurnGuard proxy node in the middle, (3) abstract API provider chips. Smooth connection lines with a few data pulses; warm espresso backdrop, no grid, no particles."
             containerClassName="rounded-2xl border border-border bg-surface"
