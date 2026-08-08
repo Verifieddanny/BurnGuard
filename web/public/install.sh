@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-REPO="Verifieddanny/BunGuard"
+REPO="Verifieddanny/BurnGuard"
 BINARY="burnguard"
 
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')

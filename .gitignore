@@ -3,3 +3,5 @@
 store.db
 /dist
 burnguard.yaml.DS_Store
+
+/.claude

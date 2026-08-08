@@ -18,10 +18,10 @@ import {
 const NAV_LINKS = [
   { label: "Features", href: "/#features" },
   { label: "Pricing", href: "/#pricing" },
-  { label: "Docs", href: "/#", external: false },
+  { label: "Docs", href: "https://mintlify.wiki/Verifieddanny/BurnGuard/status", external: true },
 ];
 
-const GITHUB_URL = "https://github.com";
+const GITHUB_URL = "https://github.com/Verifieddanny/BurnGuard";
 
 export function Navbar() {
   const { isAuthenticated } = useAuth();
@@ -86,6 +86,8 @@ export function Navbar() {
               <Link
                 key={l.label}
                 href={l.href}
+                target={l.external ? "_blank" : undefined}
+                rel={l.external ? "noopener noreferrer" : undefined}
                 className="rounded-full px-3 py-1.5 text-sm text-fg-muted transition-colors duration-150 hover:bg-elevated hover:text-fg"
               >
                 {l.label}
@@ -128,7 +130,7 @@ export function Navbar() {
       {menuOpen && (
         <div
           ref={overlayRef}
-          className="fixed inset-0 z-[70] flex flex-col bg-bg/95 backdrop-blur-xl md:hidden"
+          className="fixed inset-0 z-70 flex flex-col bg-bg/95 backdrop-blur-xl md:hidden"
         >
           <div className="flex items-center justify-between px-6 pt-6">
             <Logo />

@@ -6,7 +6,7 @@ import { Reveal } from "./reveal";
 
 // Owner/repo derived from the Go module path. Falls back gracefully if the
 // GitHub API is unreachable or rate-limited.
-const REPO = "Verifieddanny/bunguard";
+const REPO = "Verifieddanny/BurnGuard";
 const STAR_FALLBACK = 1200;
 
 const LOGOS = [
@@ -92,7 +92,7 @@ export function SocialProof() {
         </Reveal>
 
         {/* Logo ticker */}
-        <div className="relative mt-12 overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
+        <div className="relative mt-12 overflow-hidden mask-[linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
           <div className="flex w-max animate-marquee gap-4">
             {[...LOGOS, ...LOGOS].map((logo, i) => (
               <div

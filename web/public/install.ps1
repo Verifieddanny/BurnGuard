@@ -1,4 +1,4 @@
-$repo = "Verifieddanny/BunGuard"
+$repo = "Verifieddanny/BurnGuard"
 $binary = "burnguard"
 $arch = if ([Environment]::Is64BitOperatingSystem) { "amd64" } else { "386" }
 

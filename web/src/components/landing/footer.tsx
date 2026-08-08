@@ -5,7 +5,7 @@ import { GithubIcon, ExternalLinkIcon } from "@/components/icons";
 const LINKS = [
   { label: "Features", href: "/#features" },
   { label: "Pricing", href: "/#pricing" },
-  { label: "Docs", href: "/#" },
+  { label: "Docs", href: "https://mintlify.wiki/Verifieddanny/BurnGuard", external: true },
   { label: "Login", href: "/login" },
 ];
 
@@ -25,13 +25,15 @@ export function Footer() {
             <Link
               key={l.label}
               href={l.href}
+              target={l.external ? "_blank" : undefined}
+              rel={l.external ? "noopener noreferrer" : undefined}
               className="text-sm text-fg-muted transition-colors duration-150 hover:text-fg"
             >
               {l.label}
             </Link>
           ))}
           <a
-            href="https://github.com"
+            href="https://github.com/Verifieddanny/BurnGuard"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-sm text-fg-muted transition-colors duration-150 hover:text-fg"
