@@ -42,7 +42,7 @@ brews:
 release:
   github:
     owner: Verifieddanny
-    name: BunGuard
+    name: BurnGuard
 
 changelog:
   sort: asc
