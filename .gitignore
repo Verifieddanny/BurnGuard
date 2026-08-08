@@ -1,3 +1,5 @@
 .envrc
 /tmp
 store.db
+/dist
+burnguard.yaml

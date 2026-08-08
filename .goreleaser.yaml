@@ -22,18 +22,21 @@ archives:
   - id: proxy
     builds:
       - proxy
-    format: tar.gz
+    formats:
+      - tar.gz
     format_overrides:
       - goos: windows
-        format: zip
+        formats:
+          - zip
     name_template: "burnguard_{{ .Os }}_{{ .Arch }}"
 
-brews:
+homebrews:
   - name: burnguard
     repository:
       owner: Verifieddanny
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    directory: Formula 
     homepage: https://burnguard.run
     description: "Stop surprise AI API bills before they happen"
     install: |
