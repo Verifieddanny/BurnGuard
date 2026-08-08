@@ -28,6 +28,7 @@ archives:
       - goos: windows
         formats:
           - zip
+    # Force lowercase os/arch naming
     name_template: "burnguard_{{ .Os }}_{{ .Arch }}"
 
 brews:
@@ -46,10 +47,3 @@ release:
   github:
     owner: Verifieddanny
     name: BurnGuard
-
-changelog:
-  sort: asc
-  filters:
-    exclude:
-      - "^docs:"
-      - "^test:"
