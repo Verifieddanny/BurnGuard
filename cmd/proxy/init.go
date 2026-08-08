@@ -172,8 +172,8 @@ func runInit() error {
 			fmt.Printf("  Anthropic: http://localhost:%s/anthropic/v1/messages\n", proxyPort)
 		case "openai":
 			fmt.Printf("  OpenAI:    http://localhost:%s/openai/v1/chat/completions\n", proxyPort)
-		// case "google":
-		// 	fmt.Printf("  Google:    http://localhost:%s/google/v1/models\n", proxyPort)
+			// case "google":
+			// 	fmt.Printf("  Google:    http://localhost:%s/google/v1/models\n", proxyPort)
 		}
 	}
 
