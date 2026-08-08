@@ -150,7 +150,7 @@ func runInit() error {
 	// Write config file
 	configDir := "."
 	os.MkdirAll(configDir, 0755)
-	configPath := filepath.Join(configDir, "config.yaml")
+	configPath := filepath.Join(configDir, "burnguard.yaml")
 
 	data, err := yaml.Marshal(cfg)
 	if err != nil {
