@@ -30,13 +30,13 @@ archives:
           - zip
     name_template: "burnguard_{{ .Os }}_{{ .Arch }}"
 
-homebrews:
+brews:
   - name: burnguard
     repository:
       owner: Verifieddanny
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
-    directory: Formula 
+    directory: Formula
     homepage: https://burnguard.run
     description: "Stop surprise AI API bills before they happen"
     install: |
