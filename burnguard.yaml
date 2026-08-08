@@ -1,0 +1,30 @@
+# burnguard.yaml
+
+server:
+  proxy_port: ":8080"
+  db_path: store.db
+
+budget:
+  limit: 0.003  # USD per month
+
+providers:
+  anthropic:
+    base_url: https://api.anthropic.com
+  openai:
+    base_url: https://api.openai.com
+  google:
+    base_url: https://generativelanguage.googleapis.com
+
+alerts:
+  slack_webhook: "https://hooks.slack.com/services/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"
+  discord_webhook: "https://discord.com/api/webhooks/1526368065787265184/F9SqcscCPlAttPShvJ0KZpx2GQlWl2-u1XSbbgqgARVNdtDTHz50zVLt3PHEipDoXndd"
+  thresholds:
+    - 0.5   # alert at 50%
+    - 0.8   # alert at 80%
+    - 1.0   # alert at 100%
+
+sync:
+  enabled: true
+  token: "bg_82f72566bd4662be7523370bb8d26c2dc0059b161a1b3b0793f7a91dfa452f8f"
+  url: "http://localhost:3001"
+  interval: 60  # seconds
