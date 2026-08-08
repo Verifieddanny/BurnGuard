@@ -252,7 +252,7 @@ function InitStep({ token }: { token: string }) {
             {" providers detected: anthropic, openai\n"}
             <span className="text-success">{"  ✓"}</span>
             {" config written to "}
-            <span className="text-fg">~/.burnguard/config.yaml</span>
+            <span className="text-fg">./burnguard.yaml</span>
             {"\n\n"}
             <span className="text-accent">{"  ▸"}</span>
             {" next: "}
