@@ -18,7 +18,7 @@ import {
 const NAV_LINKS = [
   { label: "Features", href: "/#features" },
   { label: "Pricing", href: "/#pricing" },
-  { label: "Docs", href: "https://mintlify.wiki/Verifieddanny/BurnGuard/status", external: true },
+  { label: "Docs", href: "https://mintlify.wiki/Verifieddanny/BurnGuard", external: true },
 ];
 
 const GITHUB_URL = "https://github.com/Verifieddanny/BurnGuard";
