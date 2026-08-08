@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 
 	"github.com/Verifieddanny/bunguard/internal/alerts"
 	"github.com/Verifieddanny/bunguard/internal/budget"
@@ -35,10 +34,9 @@ func main() {
 		}
 	}
 
-
-	configPath := "burnguard.yaml" 
+	configPath := "burnguard.yaml"
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		configPath = filepath.Join(homeDir(), ".burnguard", "config.yaml")
+		log.Fatal("No burnguard.yaml found. Run 'burnguard init' first.")
 	}
 
 	cfg, err := config.Load(configPath)
