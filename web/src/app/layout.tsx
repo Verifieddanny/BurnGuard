@@ -3,6 +3,7 @@ import { Bricolage_Grotesque, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { QueryProvider } from "@/providers/query-provider";
 import { ThemeProvider, themeNoFlashScript } from "@/providers/theme-provider";
+import { Analytics } from "@vercel/analytics/next"
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -115,6 +116,7 @@ export default function RootLayout({
             />
           </QueryProvider>
         </ThemeProvider>
+        <Analytics/>
       </body>
     </html>
   );
