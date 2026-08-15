@@ -11,23 +11,24 @@ import (
 )
 
 type application struct {
-	config          config
-	logger          *zap.SugaredLogger
-	showdownTimeout time.Duration
-	httpClient      *http.Client
-	sessions        *SessionStore
-	store           dbstore.Storage
-	webauthn        *webauthn.WebAuthn 
-	passkeySessionStore    *PasskeySessionStore
+	config                   config
+	logger                   *zap.SugaredLogger
+	showdownTimeout          time.Duration
+	httpClient               *http.Client
+	sessions                 *SessionStore
+	store                    dbstore.Storage
+	webauthn                 *webauthn.WebAuthn
+	passkeySessionStore      *PasskeySessionStore
 	passkeyLoginSessionStore *PasskeyLoginSessionStore
 }
 
 type config struct {
-	addr        string
-	db          dbConfig
-	env         string
-	oAuth       oAuth
-	frontendURL string
+	addr            string
+	db              dbConfig
+	env             string
+	oAuth           oAuth
+	frontendURL     string
+	frontendOrigins []string
 }
 
 type dbConfig struct {
@@ -38,13 +39,13 @@ type dbConfig struct {
 }
 
 type oAuth struct {
-    Github GithubConfig
-    Google GoogleConfig
+	Github GithubConfig
+	Google GoogleConfig
 }
 
 type GoogleConfig struct {
-    ClientID     string
-    ClientSecret string
+	ClientID     string
+	ClientSecret string
 }
 
 type GithubConfig struct {
@@ -63,7 +64,6 @@ type SessionStore struct {
 	mu       sync.RWMutex
 	sessions map[string]int64
 }
-
 
 type PasskeySessionStore struct {
 	mu       sync.RWMutex

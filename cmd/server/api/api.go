@@ -21,7 +21,7 @@ func (app *application) mount() http.Handler {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	allowedOrigins := []string{app.config.frontendURL}
+	allowedOrigins := append([]string{}, app.config.frontendOrigins...)
 
 	if app.config.env != "production" {
 		allowedOrigins = append(allowedOrigins, "https://www.burnguard.run")

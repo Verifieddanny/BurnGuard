@@ -2,7 +2,9 @@ package main
 
 import (
 	"net/http"
+	"net/url"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -26,9 +28,20 @@ func main() {
 	if frontendURL == "" {
 		frontendURL = "http://localhost:3000"
 	}
+
+	env := os.Getenv("APP_ENV")
+	if env == "" {
+		env = os.Getenv("ENV")
+	}
+	if env == "" {
+		env = "development"
+	}
+
+	frontendOrigins := parseOrigins(os.Getenv("FRONTEND_ORIGINS"), frontendURL)
+
 	cfg := config{
 		addr: serverAddr,
-		env:  "development",
+		env:  env,
 		db: dbConfig{
 			addr:         os.Getenv("DATABASE_URL"),
 			maxOpenConns: 30,
@@ -46,7 +59,8 @@ func main() {
 				ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
 			},
 		},
-		frontendURL: frontendURL,
+		frontendURL:     frontendURL,
+		frontendOrigins: frontendOrigins,
 	}
 
 	logger := zap.Must(zap.NewProduction()).Sugar()
@@ -68,13 +82,14 @@ func main() {
 
 	rpID := os.Getenv("WEBAUTHN_RP_ID")
 	if rpID == "" {
-		rpID = "localhost"
+		rpID = rpIDFromOrigin(frontendURL)
 	}
+	rpOrigins := parseOrigins(os.Getenv("WEBAUTHN_RP_ORIGINS"), frontendOrigins...)
 
 	wn, err := webauthn.New(&webauthn.Config{
 		RPDisplayName: "BurnGuard",
 		RPID:          rpID,
-		RPOrigins:     []string{cfg.frontendURL},
+		RPOrigins:     rpOrigins,
 	})
 	if err != nil {
 		logger.Fatal("failed to init webauthn:", err)
@@ -94,4 +109,84 @@ func main() {
 	mux := app.mount()
 
 	logger.Fatal(app.run(mux))
+}
+
+func parseOrigins(envValue string, defaults ...string) []string {
+	values := defaults
+	if envValue != "" {
+		values = strings.Split(envValue, ",")
+	}
+
+	seen := make(map[string]bool)
+	origins := make([]string, 0, len(values)+2)
+	for _, value := range values {
+		origin := normalizeOrigin(value)
+		if origin == "" || seen[origin] {
+			continue
+		}
+		seen[origin] = true
+		origins = append(origins, origin)
+
+		if alternate := alternateWWWOrigin(origin); alternate != "" && !seen[alternate] {
+			seen[alternate] = true
+			origins = append(origins, alternate)
+		}
+	}
+
+	return origins
+}
+
+func normalizeOrigin(value string) string {
+	value = strings.TrimSpace(value)
+	if value == "" {
+		return ""
+	}
+
+	u, err := url.Parse(value)
+	if err != nil || u.Scheme == "" || u.Host == "" {
+		return strings.TrimRight(value, "/")
+	}
+
+	return u.Scheme + "://" + u.Host
+}
+
+func alternateWWWOrigin(origin string) string {
+	u, err := url.Parse(origin)
+	if err != nil || u.Scheme == "" || u.Host == "" {
+		return ""
+	}
+
+	host := u.Hostname()
+	port := u.Port()
+	if host == "localhost" || strings.HasPrefix(host, "127.") || strings.Contains(host, ":") {
+		return ""
+	}
+
+	if strings.HasPrefix(host, "www.") {
+		host = strings.TrimPrefix(host, "www.")
+	} else if strings.Count(host, ".") >= 1 {
+		host = "www." + host
+	} else {
+		return ""
+	}
+
+	if port != "" {
+		host += ":" + port
+	}
+
+	return u.Scheme + "://" + host
+}
+
+func rpIDFromOrigin(origin string) string {
+	u, err := url.Parse(origin)
+	if err != nil || u.Host == "" {
+		return "localhost"
+	}
+
+	host := u.Hostname()
+	if strings.HasPrefix(host, "www.") {
+		return strings.TrimPrefix(host, "www.")
+	}
+
+	return host
 }
