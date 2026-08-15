@@ -24,6 +24,7 @@ type application struct {
 
 type config struct {
 	addr            string
+	apiURL          string
 	db              dbConfig
 	env             string
 	oAuth           oAuth

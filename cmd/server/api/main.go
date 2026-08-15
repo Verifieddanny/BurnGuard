@@ -24,6 +24,12 @@ func main() {
 
 	serverAddr := ":" + port
 
+	apiURL := os.Getenv("API_PUBLIC_URL")
+	if apiURL == "" {
+		apiURL = "http://localhost:" + port
+	}
+	apiURL = normalizeOrigin(apiURL)
+
 	frontendURL := os.Getenv("FRONTEND_URL")
 	if frontendURL == "" {
 		frontendURL = "http://localhost:3000"
@@ -40,8 +46,9 @@ func main() {
 	frontendOrigins := parseOrigins(os.Getenv("FRONTEND_ORIGINS"), frontendURL)
 
 	cfg := config{
-		addr: serverAddr,
-		env:  env,
+		addr:   serverAddr,
+		apiURL: apiURL,
+		env:    env,
 		db: dbConfig{
 			addr:         os.Getenv("DATABASE_URL"),
 			maxOpenConns: 30,

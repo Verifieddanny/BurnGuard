@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 
 	dbstore "github.com/Verifieddanny/bunguard/internal/db_store"
@@ -186,19 +187,14 @@ func (app *application) getGithubUserEmail(token string) (string, error) {
 }
 
 func (app *application) redirectToGoogle(w http.ResponseWriter, r *http.Request) {
-	scope := "email%20profile"
-	callback := "https://good-meteorology.outray.app"
+	values := url.Values{}
+	values.Set("client_id", app.config.oAuth.Google.ClientID)
+	values.Set("redirect_uri", app.googleRedirectURI())
+	values.Set("response_type", "code")
+	values.Set("scope", "email profile")
+	values.Set("prompt", "consent")
 
-	url := strings.Join([]string{
-		"https://accounts.google.com/o/oauth2/v2/auth",
-		"?client_id=" + app.config.oAuth.Google.ClientID,
-		"&redirect_uri=" + callback + "/v1/auth/google/callback",
-		"&response_type=code",
-		"&scope=" + scope,
-		"&prompt=consent",
-	}, "")
-
-	http.Redirect(w, r, url, http.StatusFound)
+	http.Redirect(w, r, "https://accounts.google.com/o/oauth2/v2/auth?"+values.Encode(), http.StatusFound)
 }
 
 func (app *application) handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
@@ -270,16 +266,14 @@ func (app *application) handleGoogleCallback(w http.ResponseWriter, r *http.Requ
 }
 
 func (app *application) exchangeGoogleCodeForToken(code string) (string, error) {
+	values := url.Values{}
+	values.Set("client_id", app.config.oAuth.Google.ClientID)
+	values.Set("client_secret", app.config.oAuth.Google.ClientSecret)
+	values.Set("code", code)
+	values.Set("grant_type", "authorization_code")
+	values.Set("redirect_uri", app.googleRedirectURI())
 
-	body := strings.NewReader(strings.Join([]string{
-		"client_id=" + app.config.oAuth.Google.ClientID,
-		"&client_secret=" + app.config.oAuth.Google.ClientSecret,
-		"&code=" + code,
-		"&grant_type=authorization_code",
-		"&redirect_uri=https://good-meteorology.outray.app/v1/auth/google/callback",
-	}, ""))
-
-	req, err := http.NewRequest("POST", "https://oauth2.googleapis.com/token", body)
+	req, err := http.NewRequest("POST", "https://oauth2.googleapis.com/token", strings.NewReader(values.Encode()))
 	if err != nil {
 		return "", err
 	}
@@ -300,6 +294,10 @@ func (app *application) exchangeGoogleCodeForToken(code string) (string, error) 
 	}
 
 	return tokenResponse.AccessToken, nil
+}
+
+func (app *application) googleRedirectURI() string {
+	return strings.TrimRight(app.config.apiURL, "/") + "/v1/auth/google/callback"
 }
 
 func (app *application) getProfileHandler(w http.ResponseWriter, r *http.Request) {
