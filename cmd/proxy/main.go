@@ -43,6 +43,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if cfg.Budget.Limit <= 0 {
+		log.Fatal("Invalid burnguard.yaml: budget.limit must be greater than 0. Run 'burnguard init' again or edit the config.")
+	}
+
 	conn, err := db.New(cfg.Server.DBPath)
 
 	if err != nil {

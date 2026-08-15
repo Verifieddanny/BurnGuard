@@ -35,3 +35,10 @@ func (t *Tracker) Total() float64 {
 
 	return t.totalSpend
 }
+
+func (t *Tracker) Limit() float64 {
+	t.mutex.Lock()
+	defer t.mutex.Unlock()
+
+	return t.budgetLimit
+}

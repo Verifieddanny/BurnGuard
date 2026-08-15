@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/Verifieddanny/bunguard/internal/config"
 	"github.com/charmbracelet/huh"
@@ -12,7 +13,7 @@ import (
 
 func runInit() error {
 	var providers []string
-	var budgetLimit float64
+	budgetLimitInput := "50.00"
 	var proxyPort string
 	var hasSyncToken bool
 	var syncToken string
@@ -36,10 +37,7 @@ func runInit() error {
 			huh.NewInput().
 				Title("Monthly budget limit in USD").
 				Placeholder("50.00").
-				Value(func() *string {
-					s := "50.00"
-					return &s
-				}()),
+				Value(&budgetLimitInput),
 		),
 
 		huh.NewGroup(
@@ -108,6 +106,11 @@ func runInit() error {
 		proxyPort = "8080"
 	}
 
+	budgetLimit, err := strconv.ParseFloat(budgetLimitInput, 64)
+	if err != nil || budgetLimit <= 0 {
+		return fmt.Errorf("monthly budget limit must be a positive number")
+	}
+
 	// Build config
 	cfg := config.Config{
 		Server: config.ServerConfig{
@@ -165,15 +168,25 @@ func runInit() error {
 	fmt.Println("To start the proxy:")
 	fmt.Println("  burnguard start")
 	fmt.Println()
-	fmt.Println("Then point your app at:")
+	fmt.Println("Then point SDK base URLs at:")
+	for _, p := range providers {
+		switch p {
+		case "anthropic":
+			fmt.Printf("  Anthropic: http://localhost:%s/anthropic\n", proxyPort)
+		case "openai":
+			fmt.Printf("  OpenAI:    http://localhost:%s/openai\n", proxyPort)
+			// case "google":
+			// 	fmt.Printf("  Google:    http://localhost:%s/google\n", proxyPort)
+		}
+	}
+	fmt.Println()
+	fmt.Println("Direct endpoint examples:")
 	for _, p := range providers {
 		switch p {
 		case "anthropic":
 			fmt.Printf("  Anthropic: http://localhost:%s/anthropic/v1/messages\n", proxyPort)
 		case "openai":
 			fmt.Printf("  OpenAI:    http://localhost:%s/openai/v1/chat/completions\n", proxyPort)
-			// case "google":
-			// 	fmt.Printf("  Google:    http://localhost:%s/google/v1/models\n", proxyPort)
 		}
 	}
 
