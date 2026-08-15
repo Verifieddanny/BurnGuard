@@ -24,7 +24,7 @@ func (app *application) mount() http.Handler {
 	allowedOrigins := []string{app.config.frontendURL}
 
 	if app.config.env != "production" {
-		allowedOrigins = append(allowedOrigins, "http://localhost:3000")
+		allowedOrigins = append(allowedOrigins, "https://www.burnguard.run")
 	}
 
 	r.Use(cors.Handler(cors.Options{

@@ -24,7 +24,7 @@ func main() {
 
 	frontendURL := os.Getenv("FRONTEND_URL")
 	if frontendURL == "" {
-		frontendURL = "http://localhost:3000" 
+		frontendURL = "http://localhost:3000"
 	}
 	cfg := config{
 		addr: serverAddr,
